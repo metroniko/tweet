@@ -1,0 +1,22 @@
+<html>
+
+<body>
+    <form method="post" action="/greeting/filter">
+        <input type="text" name="filter">
+        <button type="submit">Фильтровать</button>
+    </form>
+    <form method="post" action="/greeting/addMessage">
+        <input type="text" name="text" placeholder="введите сообщение">
+        <input type="text" name="tag" placeholder="тэг">
+        <button type="submit">Добавить</button>
+    </form>
+    <div>Сообщение</div>
+    {{#messages}}
+        <div>
+            <b>{{text}}</b>
+            <span>{{id}}</span>
+            <i>{{tag}}</i>
+        </div>
+    {{/messages}}
+</body>
+</html>
