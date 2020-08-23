@@ -1,6 +1,8 @@
 package ru.home.tweet.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+
 
 @Entity
 public class Message {
@@ -30,6 +32,7 @@ public class Message {
     @JoinColumn(name = "user_id")
     private User author;
 
+    @NotBlank(message = "Please fill the message")
     private String text;
 
     private String filename;
