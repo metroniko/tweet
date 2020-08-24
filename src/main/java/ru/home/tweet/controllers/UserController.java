@@ -1,5 +1,7 @@
 package ru.home.tweet.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,8 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
+    private static  final Logger log = LoggerFactory.getLogger(UserController.class);
 
 
     @GetMapping

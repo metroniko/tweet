@@ -1,8 +1,11 @@
 package ru.home.tweet.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,8 @@ import java.util.UUID;
 public class MainController {
 
     private MessageRepo messageRepo;
+
+    private static  final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -100,13 +105,19 @@ public class MainController {
         return "main";
     }
 
-    @GetMapping("/user-messages/${user}")
+    @GetMapping("/user-messages/{user}")
+    @Transactional
     public String getUserMessages(@AuthenticationPrincipal User currentUser,
                                   @PathVariable User user,
+                                  @RequestParam(required = false) Message message,
                                   Model model) {
+
+
+        log.info("current User: {}, message: {}", currentUser, message);
 
         Set<Message> messages = user.getMessages();
         model.addAttribute("messages", messages);
+        model.addAttribute("message", message);
         model.addAttribute("isCurrentUser",currentUser.equals(user));
 
         return "userMessages";

@@ -2,6 +2,7 @@ package ru.home.tweet.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.Objects;
 
 
 @Entity
@@ -73,6 +74,32 @@ public class Message {
         this.tag = tag;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return id.equals(message.id) &&
+                author.equals(message.author) &&
+                text.equals(message.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, author, text);
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "author=" + author +
+                ", text='" + text + '\'' +
+                ", filename='" + filename + '\'' +
+                ", tag='" + tag + '\'' +
+                '}';
+    }
+
     private String tag;
+
 
 }
