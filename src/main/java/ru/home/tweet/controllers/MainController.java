@@ -118,12 +118,14 @@ public class MainController {
                                   @RequestParam(required = false) Message message,
                                   Model model) {
 
-
         log.info("current User: {}, message: {}", currentUser, message);
 
         Set<Message> messages = user.getMessages();
         model.addAttribute("messages", messages);
-        model.addAttribute("message", message);
+        model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
+        model.addAttribute("subscribersCount", user.getSubscribers().size());
+        model.addAttribute("subscribersCount", user.getSubscribers().size());
+        model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
         model.addAttribute("isCurrentUser",currentUser.equals(user));
 
         return "userMessages";
@@ -139,6 +141,8 @@ public class MainController {
                                     @RequestParam("file") MultipartFile file
                                     ) throws IOException {
 
+
+
         if (message.getAuthor().equals(currentUser)) {
             if (!StringUtils.isEmpty(text)) {
                 message.setText(text);
@@ -148,6 +152,8 @@ public class MainController {
             }
 
             saveFile(message, file);
+
+            log.info("saved message : {}", message);
 
             messageRepo.save(message);
         }
