@@ -22,18 +22,6 @@ public class User implements UserDetails {
     @NotBlank(message = "Заполни")
     private String password;
 
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
-    }
-
-    @Transient
-    @NotBlank(message = "Должно быть заполнено")
-    private String password2;
-
     private boolean active;
 
     @NotBlank(message = "Заполни")
