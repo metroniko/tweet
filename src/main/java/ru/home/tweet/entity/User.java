@@ -1,6 +1,7 @@
 package ru.home.tweet.entity;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -61,7 +62,7 @@ public class User implements UserDetails {
     private Set<Message> messages;
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_subscription",
             joinColumns = { @JoinColumn(name = "channel_id") },
             inverseJoinColumns = { @JoinColumn(name = "subscriber_id") }
@@ -85,7 +86,7 @@ public class User implements UserDetails {
         this.subscriptions = subscriptions;
     }
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_subscription",
             inverseJoinColumns = { @JoinColumn(name = "channel_id") },
             joinColumns = { @JoinColumn(name = "subscriber_id") }

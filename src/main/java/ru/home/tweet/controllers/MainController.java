@@ -124,7 +124,7 @@ public class MainController {
         model.addAttribute("messages", messages);
         model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
         model.addAttribute("subscribersCount", user.getSubscribers().size());
-        model.addAttribute("subscribersCount", user.getSubscribers().size());
+        model.addAttribute("subscriptionsCount", user.getSubscriptions().size());
         model.addAttribute("isSubscriber", user.getSubscribers().contains(currentUser));
         model.addAttribute("isCurrentUser",currentUser.equals(user));
 
@@ -158,7 +158,7 @@ public class MainController {
             messageRepo.save(message);
         }
 
-        return "redirect:/user-messages/" +user;
+        return String.format("redirect:/user-messages/%d", user);
 
     }
 

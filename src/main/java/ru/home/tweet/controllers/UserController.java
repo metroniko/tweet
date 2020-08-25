@@ -4,7 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.home.tweet.entity.Role;
@@ -81,6 +83,10 @@ public class UserController {
     @GetMapping("subscribe/{user}")
     public String subscribe(@PathVariable User user,
                             @AuthenticationPrincipal User currentUser) {
+        User principal = (User) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
         userService.subscribe(currentUser, user);
         return "redirect:/user-messages/" + user.getId();
@@ -104,9 +110,9 @@ public class UserController {
         model.addAttribute("type", type);
 
         if ("subscriptions".equals(type)) {
-            model.addAttribute("users", user.getSubscribers());
-        } else {
             model.addAttribute("users", user.getSubscriptions());
+        } else {
+            model.addAttribute("users", user.getSubscribers());
         }
         //ПРОВЕРИТЬ РАБОТУ ПОДПИСОК
         //ПРОВЕРИТЬ РАБОТУ ПОДПИСОК
