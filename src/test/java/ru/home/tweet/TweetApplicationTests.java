@@ -4,12 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import ru.home.tweet.controllers.MainController;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/application.properties")
+@TestPropertySource("/application-dev.properties")
 class TweetApplicationTests {
 
     @Autowired
@@ -36,13 +35,11 @@ class TweetApplicationTests {
 
     @Test
     public void contextLoads() throws Exception {
-        assertThat(mainController).isNotNull();
-
         this.mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect((ResultMatcher) content().string(containsString("Hello, guest")))
-                .andExpect((ResultMatcher) content().string(containsString("Please, login")));
+                .andExpect(MockMvcResultMatchers.content().string(containsString("Please, login")))
+                .andExpect(MockMvcResultMatchers.content().string(containsString("Hello, guest")));
 
     }
 
@@ -56,11 +53,11 @@ class TweetApplicationTests {
     }
 
     @Test
-    @Sql(value = {"/resources/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value={"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     public void correctLoginTest() throws Exception {
         mockMvc.perform(formLogin()
-                .user("tinagi5935@youlynx.com")
-                .password("tinagi5935@youlynx.com"))
+                .user("first")
+                .password("first"))
                 .andDo(print())
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
