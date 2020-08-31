@@ -1,12 +1,13 @@
 package ru.home.tweet.controllers;
 
-import ch.qos.logback.core.util.StringCollectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
@@ -48,14 +49,16 @@ public class MainController {
 
     @GetMapping("/main")
     public String mainControl(Model model,
-                              @RequestParam(required = false, defaultValue = "") String filter) {
-        Iterable<Message> messageByTag;
+                              @RequestParam(required = false, defaultValue = "") String filter,
+                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        Iterable<Message> page;
         if (filter != null && !filter.isEmpty()) {
-            messageByTag = messageRepo.findMessageByTag(filter);
+            page = messageRepo.findMessageByTag(filter, pageable);
         } else {
-            messageByTag = messageRepo.findAll();
+            page = messageRepo.findAll(pageable);
         }
-        model.addAttribute("messages", messageByTag);
+        model.addAttribute("page", page);
+        model.addAttribute("url", "/main");
         model.addAttribute("filter", filter);
         return "main";
     }
