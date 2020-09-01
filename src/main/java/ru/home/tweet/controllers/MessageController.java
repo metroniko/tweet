@@ -3,6 +3,8 @@ package ru.home.tweet.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import ru.home.tweet.dto.MessageDTO;
 import ru.home.tweet.entity.Message;
 import ru.home.tweet.entity.User;
 import ru.home.tweet.repository.MessageRepo;
+import ru.home.tweet.service.MessageService;
 
 import javax.validation.Valid;
 import java.io.File;
@@ -28,17 +32,20 @@ import java.util.Set;
 import java.util.UUID;
 
 @Controller
-public class MainController {
+public class MessageController {
 
     private MessageRepo messageRepo;
 
-    private static  final Logger log = LoggerFactory.getLogger(MainController.class);
+    private MessageService messageService;
+
+    private static  final Logger log = LoggerFactory.getLogger(MessageController.class);
 
     @Value("${upload.path}")
     private String uploadPath;
 
-    public MainController(MessageRepo messageRepo) {
+    public MessageController(MessageRepo messageRepo, MessageService messageService) {
         this.messageRepo = messageRepo;
+        this.messageService = messageService;
     }
 
     @GetMapping("/")
@@ -48,18 +55,18 @@ public class MainController {
     }
 
     @GetMapping("/main")
-    public String mainControl(Model model,
-                              @RequestParam(required = false, defaultValue = "") String filter,
-                              @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
-        Iterable<Message> page;
-        if (filter != null && !filter.isEmpty()) {
-            page = messageRepo.findMessageByTag(filter, pageable);
-        } else {
-            page = messageRepo.findAll(pageable);
-        }
+    public String main(
+            @RequestParam(required = false, defaultValue = "") String filter,
+            Model model,
+            @PageableDefault(sort = { "id" }, direction = Sort.Direction.DESC) Pageable pageable,
+            @AuthenticationPrincipal User user
+    ) {
+        Page<MessageDTO> page = messageService.messageList(pageable, filter, user);
+
         model.addAttribute("page", page);
         model.addAttribute("url", "/main");
         model.addAttribute("filter", filter);
+
         return "main";
     }
 

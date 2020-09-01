@@ -1,8 +1,12 @@
 package ru.home.tweet.entity;
 
+import ru.home.tweet.util.MessageHelper;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -36,6 +40,22 @@ public class Message {
     @NotBlank(message = "Please fill the message")
     private String text;
 
+    @ManyToMany
+    @JoinTable(
+            name = "message_likes",
+            joinColumns = {@JoinColumn(name = "message_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<User> likes = new HashSet<>();
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
+    }
+
     private String filename;
 
     public String getFilename() {
@@ -47,7 +67,7 @@ public class Message {
     }
 
     public String getAuthorName() {
-        return author != null ? author.getUsername(): "none";
+        return MessageHelper.getAuthorName(author);
     }
 
     public Integer getId() {
