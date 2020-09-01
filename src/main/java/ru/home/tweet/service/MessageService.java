@@ -1,5 +1,6 @@
 package ru.home.tweet.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import ru.home.tweet.dto.MessageDTO;
@@ -13,12 +14,12 @@ import org.springframework.data.domain.Pageable;
 public class MessageService {
 
     private EntityManager entityManager;
+
+    @Autowired
     private MessageRepo messageRepo;
 
-    public MessageService(EntityManager entityManager,
-                          MessageRepo messageRepo) {
+    public MessageService(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.messageRepo = messageRepo;
     }
 
 
